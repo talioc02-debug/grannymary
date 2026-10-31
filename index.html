@@ -372,11 +372,12 @@ function finishAll(my){
   var b=activeBtn;queue.forEach(clearEl);setBtn(b,false);setProg(b,100);
   activeBtn=null;queue=[];qi=0;setStatus('Finished ✓');token++;
 }
+function unlock(){if(!synth)return;try{var u=new SpeechSynthesisUtterance(' ');u.volume=0;u.rate=2;synth.speak(u);if(synth.resume)synth.resume();}catch(e){}}
 function playRow(btn,r){
   if(!synth){setStatus('Sound is not available in this browser.');return;}
   var els=$$('#story .sp');
   if(btn.classList.contains('playing')){stopAll();return;}
-  stopAll();
+  stopAll();unlock();
   rate=r;
   var my=token;activeBtn=btn;setBtn(btn,true);queue=els;qi=0;doneWords=0;
   totalWords=els.reduce(function(a,e){return a+e._info.words.length;},0);
@@ -535,6 +536,7 @@ function buildDict(){
     pb.addEventListener('click',function(){
       if(!synth){res.textContent='Sound is not available in this browser.';return;}
       stopAll();try{synth.cancel();}catch(e){}
+      unlock();
       setTimeout(function(){synth.speak(mkUtt(s));},60);
     });
     cb.addEventListener('click',function(){
